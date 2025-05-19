@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Discord Emoji Extractor - All Numbers Joined</title>
+<title>Discord Emoji Extractor - Auto Format</title>
 <style>
   body {
     background-color: #36393f;
@@ -38,7 +38,7 @@
   }
   .buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-bottom: 10px;
   }
   button {
@@ -75,7 +75,19 @@
     word-break: break-all;
     color: #b9bbbe;
     font-size: 14px;
-    user-select: all; /* allow easy manual copy */
+  }
+  .copy-btn {
+    margin-top: 6px;
+    background-color: #43b581;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .copy-btn:hover {
+    background-color: #3aa06b;
   }
   .error-msg {
     color: #f04747;
@@ -88,62 +100,95 @@
     <h2>Discord Emoji Extractor</h2>
     <input type="text" id="emojiInput" placeholder="Paste anything with emoji ID..." />
     <div class="buttons">
-      <button onclick="showEmoji('webp')">WebP</button>
-      <button onclick="showEmoji('gif')">GIF</button>
+      <button onclick="handleEmoji()">Get Emoji</button>
     </div>
     <div class="result" id="resultArea"></div>
   </div>
 
 <script>
   function extractEmojiID(input) {
-    // Remove ?size= and anything after it to avoid mixing numbers in query string
     let cleanInput = input.split('?size=')[0];
-
-    // Extract all digits from input, join all digits into one continuous string (no spaces)
     let digitsOnly = cleanInput.match(/\d+/g);
     if (!digitsOnly) return null;
-
     return digitsOnly.join('');
   }
 
-  function showEmoji(format) {
+  function createResultBlock(imgSrc, link) {
+    const resultArea = document.getElementById("resultArea");
+
+    const block = document.createElement("div");
+    block.className = "emoji-block";
+
+    const img = new Image();
+    img.src = imgSrc;
+    img.width = 48;
+    img.height = 48;
+    block.appendChild(img);
+
+    const linkBox = document.createElement("div");
+    linkBox.className = "link-box";
+    linkBox.textContent = link;
+    block.appendChild(linkBox);
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "copy-btn";
+    copyBtn.textContent = "Copy";
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(link).then(() => {
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => (copyBtn.textContent = "Copy"), 1000);
+      });
+    };
+    block.appendChild(copyBtn);
+
+    resultArea.appendChild(block);
+  }
+
+  function showError(message) {
+    const resultArea = document.getElementById("resultArea");
+    const errorMsg = document.createElement("div");
+    errorMsg.className = "emoji-block error-msg";
+    errorMsg.textContent = `❌ ${message}`;
+    resultArea.appendChild(errorMsg);
+  }
+
+  function handleEmoji() {
     const input = document.getElementById("emojiInput").value.trim();
     const resultArea = document.getElementById("resultArea");
     resultArea.innerHTML = "";
 
     const emojiID = extractEmojiID(input);
     if (!emojiID) {
-      resultArea.textContent = "No valid emoji ID found.";
+      showError("No valid emoji ID found.");
       return;
     }
 
-    const url = `https://cdn.discordapp.com/emojis/${emojiID}.${format}?size=48`;
-    const img = new Image();
+    const tryFormats = ["gif", "webp"];
+    let found = false;
 
-    img.onload = () => {
-      const block = document.createElement("div");
-      block.className = "emoji-block";
+    (function tryNext(index) {
+      if (index >= tryFormats.length) {
+        showError(`Invalid emoji ID: ${emojiID}`);
+        return;
+      }
 
-      img.width = 48;
-      img.height = 48;
-      block.appendChild(img);
+      const format = tryFormats[index];
+      const url = `https://cdn.discordapp.com/emojis/${emojiID}.${format}?size=48`;
+      const testImg = new Image();
 
-      const linkBox = document.createElement("div");
-      linkBox.className = "link-box";
-      linkBox.textContent = url;
+      testImg.onload = () => {
+        if (!found) {
+          found = true;
+          createResultBlock(url, url);
+        }
+      };
 
-      block.appendChild(linkBox);
-      resultArea.appendChild(block);
-    };
+      testImg.onerror = () => {
+        tryNext(index + 1);
+      };
 
-    img.onerror = () => {
-      const errorMsg = document.createElement("div");
-      errorMsg.className = "emoji-block error-msg";
-      errorMsg.textContent = `❌ Invalid emoji ID: ${emojiID}`;
-      resultArea.appendChild(errorMsg);
-    };
-
-    img.src = url;
+      testImg.src = url;
+    })(0);
   }
 </script>
 </body>
