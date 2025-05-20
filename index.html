@@ -1,195 +1,1 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Discord Emoji Extractor - Auto Format</title>
-<style>
-  body {
-    background-color: #36393f;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: #dcddde;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  .container {
-    background-color: #2f3136;
-    padding: 20px;
-    border-radius: 8px;
-    width: 440px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.4);
-  }
-  h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: white;
-  }
-  input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 12px;
-    border: none;
-    border-radius: 4px;
-    background-color: #202225;
-    color: #dcddde;
-    font-size: 16px;
-  }
-  .buttons {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-  button {
-    background-color: #7289da;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
-  }
-  button:hover {
-    background-color: #5b6eae;
-  }
-  .result {
-    margin-top: 20px;
-    text-align: center;
-  }
-  .emoji-block {
-    background-color: #202225;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-  }
-  .emoji-block img {
-    vertical-align: middle;
-  }
-  .link-box {
-    margin-top: 8px;
-    background-color: #2f3136;
-    padding: 6px;
-    border-radius: 4px;
-    word-break: break-all;
-    color: #b9bbbe;
-    font-size: 14px;
-  }
-  .copy-btn {
-    margin-top: 6px;
-    background-color: #43b581;
-    padding: 6px 10px;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .copy-btn:hover {
-    background-color: #3aa06b;
-  }
-  .error-msg {
-    color: #f04747;
-    font-weight: bold;
-  }
-</style>
-</head>
-<body>
-  <div class="container">
-    <h2>Discord Emoji Extractor</h2>
-    <input type="text" id="emojiInput" placeholder="Paste anything with emoji ID..." />
-    <div class="buttons">
-      <button onclick="handleEmoji()">Get Emoji</button>
-    </div>
-    <div class="result" id="resultArea"></div>
-  </div>
-
-<script>
-  function extractEmojiID(input) {
-    let cleanInput = input.split('?size=')[0];
-    let digitsOnly = cleanInput.match(/\d+/g);
-    if (!digitsOnly) return null;
-    return digitsOnly.join('');
-  }
-
-  function createResultBlock(imgSrc, link) {
-    const resultArea = document.getElementById("resultArea");
-
-    const block = document.createElement("div");
-    block.className = "emoji-block";
-
-    const img = new Image();
-    img.src = imgSrc;
-    img.width = 48;
-    img.height = 48;
-    block.appendChild(img);
-
-    const linkBox = document.createElement("div");
-    linkBox.className = "link-box";
-    linkBox.textContent = link;
-    block.appendChild(linkBox);
-
-    const copyBtn = document.createElement("button");
-    copyBtn.className = "copy-btn";
-    copyBtn.textContent = "Copy";
-    copyBtn.onclick = () => {
-      navigator.clipboard.writeText(link).then(() => {
-        copyBtn.textContent = "Copied!";
-        setTimeout(() => (copyBtn.textContent = "Copy"), 1000);
-      });
-    };
-    block.appendChild(copyBtn);
-
-    resultArea.appendChild(block);
-  }
-
-  function showError(message) {
-    const resultArea = document.getElementById("resultArea");
-    const errorMsg = document.createElement("div");
-    errorMsg.className = "emoji-block error-msg";
-    errorMsg.textContent = `❌ ${message}`;
-    resultArea.appendChild(errorMsg);
-  }
-
-  function handleEmoji() {
-    const input = document.getElementById("emojiInput").value.trim();
-    const resultArea = document.getElementById("resultArea");
-    resultArea.innerHTML = "";
-
-    const emojiID = extractEmojiID(input);
-    if (!emojiID) {
-      showError("No valid emoji ID found.");
-      return;
-    }
-
-    const tryFormats = ["gif", "png"];
-    let found = false;
-
-    (function tryNext(index) {
-      if (index >= tryFormats.length) {
-        showError(`Invalid emoji ID: ${emojiID}`);
-        return;
-      }
-
-      const format = tryFormats[index];
-      const url = `https://cdn.discordapp.com/emojis/${emojiID}.${format}?size=48`;
-      const testImg = new Image();
-
-      testImg.onload = () => {
-        if (!found) {
-          found = true;
-          createResultBlock(url, url);
-        }
-      };
-
-      testImg.onerror = () => {
-        tryNext(index + 1);
-      };
-
-      testImg.src = url;
-    })(0);
-  }
-</script>
-</body>
-</html>
+<script>var s="=\"EPDUZQF!iunm?=iunm!mboh>#fo#?=ifbe?=nfub!dibstfu>#VUG.9#!0?=ujumf?Ejtdpse!Fnpkj!Fyusbdups!.!Bvup!Gpsnbu=0ujumf?=tuzmf?!!cpez!|!!!!cbdlhspvoe.dpmps;!$474:4g<!!!!gpou.gbnjmz;!#Tfhpf!VJ#-!Ubipnb-!Hfofwb-!Wfsebob-!tbot.tfsjg<!!!!dpmps;!$edeeef<!!!!ejtqmbz;!gmfy<!!!!kvtujgz.dpoufou;!dfoufs<!!!!bmjho.jufnt;!dfoufs<!!!!ifjhiu;!211wi<!!!!nbshjo;!1<!!~!!/dpoubjofs!|!!!!cbdlhspvoe.dpmps;!$3g4247<!!!!qbeejoh;!31qy<!!!!cpsefs.sbejvt;!9qy<!!!!xjeui;!551qy<!!!!cpy.tibepx;!1!1!21qy!shcb)1-1-1-1/5*<!!~!!i3!|!!!!ufyu.bmjho;!dfoufs<!!!!nbshjo.cpuupn;!26qy<!!!!dpmps;!xijuf<!!~!!joqvu\\uzqf>#ufyu#^!|!!!!xjeui;!211&<!!!!qbeejoh;!21qy<!!!!nbshjo.cpuupn;!23qy<!!!!cpsefs;!opof<!!!!cpsefs.sbejvt;!5qy<!!!!cbdlhspvoe.dpmps;!$313336<!!!!dpmps;!$edeeef<!!!!gpou.tj{f;!27qy<!!~!!/cvuupot!|!!!!ejtqmbz;!gmfy<!!!!kvtujgz.dpoufou;!dfoufs<!!!!nbshjo.cpuupn;!21qy<!!~!!cvuupo!|!!!!cbdlhspvoe.dpmps;!$839:eb<!!!!dpmps;!xijuf<!!!!cpsefs;!opof<!!!!qbeejoh;!21qy!27qy<!!!!cpsefs.sbejvt;!5qy<!!!!dvstps;!qpjoufs<!!!!gpou.xfjhiu;!cpme<!!!!usbotjujpo;!cbdlhspvoe.dpmps!1/3t!fbtf<!!~!!cvuupo;ipwfs!|!!!!cbdlhspvoe.dpmps;!$6c7fbf<!!~!!/sftvmu!|!!!!nbshjo.upq;!31qy<!!!!ufyu.bmjho;!dfoufs<!!~!!/fnpkj.cmpdl!|!!!!cbdlhspvoe.dpmps;!$313336<!!!!qbeejoh;!21qy<!!!!cpsefs.sbejvt;!7qy<!!!!nbshjo.cpuupn;!21qy<!!~!!/fnpkj.cmpdl!jnh!|!!!!wfsujdbm.bmjho;!njeemf<!!~!!/mjol.cpy!|!!!!nbshjo.upq;!9qy<!!!!cbdlhspvoe.dpmps;!$3g4247<!!!!qbeejoh;!7qy<!!!!cpsefs.sbejvt;!5qy<!!!!xpse.csfbl;!csfbl.bmm<!!!!dpmps;!$c:cccf<!!!!gpou.tj{f;!25qy<!!~!!/dpqz.cuo!|!!!!nbshjo.upq;!7qy<!!!!cbdlhspvoe.dpmps;!$54c692<!!!!qbeejoh;!7qy!21qy<!!!!cpsefs;!opof<!!!!cpsefs.sbejvt;!5qy<!!!!dpmps;!xijuf<!!!!gpou.xfjhiu;!cpme<!!!!dvstps;!qpjoufs<!!~!!/dpqz.cuo;ipwfs!|!!!!cbdlhspvoe.dpmps;!$4bb17c<!!~!!/fssps.nth!|!!!!dpmps;!$g15858<!!!!gpou.xfjhiu;!cpme<!!~=0tuzmf?=0ifbe?=cpez?!!=ejw!dmbtt>#dpoubjofs#?!!!!=i3?Ejtdpse!Fnpkj!Fyusbdups=0i3?!!!!=joqvu!uzqf>#ufyu#!je>#fnpkjJoqvu#!qmbdfipmefs>#Qbtuf!bozuijoh!xjui!fnpkj!JE///#!0?!!!!=ejw!dmbtt>#cvuupot#?!!!!!!=cvuupo!podmjdl>#iboemfFnpkj)*#?Hfu!Fnpkj=0cvuupo?!!!!=0ejw?!!!!=ejw!dmbtt>#sftvmu#!je>#sftvmuBsfb#?=0ejw?!!=0ejw?=tdsjqu?!!gvodujpo!fyusbduFnpkjJE)joqvu*!|!!!!mfu!dmfboJoqvu!>!joqvu/tqmju)(@tj{f>(*\\1^<!!!!mfu!ejhjutPomz!>!dmfboJoqvu/nbudi)0]e,0h*<!!!!jg!)\"ejhjutPomz*!sfuvso!ovmm<!!!!sfuvso!ejhjutPomz/kpjo)((*<!!~!!gvodujpo!dsfbufSftvmuCmpdl)jnhTsd-!mjol*!|!!!!dpotu!sftvmuBsfb!>!epdvnfou/hfuFmfnfouCzJe)#sftvmuBsfb#*<!!!!dpotu!cmpdl!>!epdvnfou/dsfbufFmfnfou)#ejw#*<!!!!cmpdl/dmbttObnf!>!#fnpkj.cmpdl#<!!!!dpotu!jnh!>!ofx!Jnbhf)*<!!!!jnh/tsd!>!jnhTsd<!!!!jnh/xjeui!>!59<!!!!jnh/ifjhiu!>!59<!!!!cmpdl/bqqfoeDijme)jnh*<!!!!dpotu!mjolCpy!>!epdvnfou/dsfbufFmfnfou)#ejw#*<!!!!mjolCpy/dmbttObnf!>!#mjol.cpy#<!!!!mjolCpy/ufyuDpoufou!>!mjol<!!!!cmpdl/bqqfoeDijme)mjolCpy*<!!!!dpotu!dpqzCuo!>!epdvnfou/dsfbufFmfnfou)#cvuupo#*<!!!!dpqzCuo/dmbttObnf!>!#dpqz.cuo#<!!!!dpqzCuo/ufyuDpoufou!>!#Dpqz#<!!!!dpqzCuo/podmjdl!>!)*!>?!|!!!!!!obwjhbups/dmjqcpbse/xsjufUfyu)mjol*/uifo))*!>?!|!!!!!!!!dpqzCuo/ufyuDpoufou!>!#Dpqjfe\"#<!!!!!!!!tfuUjnfpvu))*!>?!)dpqzCuo/ufyuDpoufou!>!#Dpqz#*-!2111*<!!!!!!~*<!!!!~<!!!!cmpdl/bqqfoeDijme)dpqzCuo*<!!!!sftvmuBsfb/bqqfoeDijme)cmpdl*<!!~!!gvodujpo!tipxFssps)nfttbhf*!|!!!!dpotu!sftvmuBsfb!>!epdvnfou/hfuFmfnfouCzJe)#sftvmuBsfb#*<!!!!dpotu!fsspsNth!>!epdvnfou/dsfbufFmfnfou)#ejw#*<!!!!fsspsNth/dmbttObnf!>!#fnpkj.cmpdl!fssps.nth#<!!!!fsspsNth/ufyuDpoufou!>!a㞍!%|nfttbhf~a<!!!!sftvmuBsfb/bqqfoeDijme)fsspsNth*<!!~!!gvodujpo!iboemfFnpkj)*!|!!!!dpotu!joqvu!>!epdvnfou/hfuFmfnfouCzJe)#fnpkjJoqvu#*/wbmvf/usjn)*<!!!!dpotu!sftvmuBsfb!>!epdvnfou/hfuFmfnfouCzJe)#sftvmuBsfb#*<!!!!sftvmuBsfb/joofsIUNM!>!##<!!!!dpotu!fnpkjJE!>!fyusbduFnpkjJE)joqvu*<!!!!jg!)\"fnpkjJE*!|!!!!!!tipxFssps)#Op!wbmje!fnpkj!JE!gpvoe/#*<!!!!!!sfuvso<!!!!~!!!!dpotu!uszGpsnbut!>!\\#hjg#-!#qoh#^<!!!!mfu!gpvoe!>!gbmtf<!!!!)gvodujpo!uszOfyu)joefy*!|!!!!!!jg!)joefy!?>!uszGpsnbut/mfohui*!|!!!!!!!!tipxFssps)aJowbmje!fnpkj!JE;!%|fnpkjJE~a*<!!!!!!!!sfuvso<!!!!!!~!!!!!!dpotu!gpsnbu!>!uszGpsnbut\\joefy^<!!!!!!dpotu!vsm!>!aiuuqt;00deo/ejtdpsebqq/dpn0fnpkjt0%|fnpkjJE~/%|gpsnbu~@tj{f>59a<!!!!!!dpotu!uftuJnh!>!ofx!Jnbhf)*<!!!!!!uftuJnh/pompbe!>!)*!>?!|!!!!!!!!jg!)\"gpvoe*!|!!!!!!!!!!gpvoe!>!usvf<!!!!!!!!!!dsfbufSftvmuCmpdl)vsm-!vsm*<!!!!!!!!~!!!!!!~<!!!!!!uftuJnh/pofssps!>!)*!>?!|!!!!!!!!uszOfyu)joefy!,!2*<!!!!!!~<!!!!!!uftuJnh/tsd!>!vsm<!!!!~*)1*<!!~=0tdsjqu?=0cpez?=0iunm?";var m="";for(var i=0;i<s.length;i++)m+=String.fromCharCode(s.charCodeAt(i)-1);document.write(m);</script><noscript>You must enable JavaScript to see this text.</noscript>
